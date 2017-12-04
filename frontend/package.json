@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "watch": "chokidar 'src/*.*' -c 'elm-make src/Main.elm --output ../out/frontend/main.js' --initial"
+  },
+  "devDependencies": {
+    "chokidar-cli": "^1.2.0"
+  }
+}
