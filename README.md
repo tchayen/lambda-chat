@@ -1,4 +1,5 @@
 # Chat
+Simple webchat. Written in ELm and Haskell. Uses websockets.
 
 ## Installing
 In `/frontend`:

@@ -1,32 +1,29 @@
-FROM haskell:latest
+FROM haskell:7.10
 ADD . app
-EXPOSE 9160
+ENV PATH /opt/Elm-Platform/$0.18/.cabal-sandbox/bin:$PATH
 
 # Install and compile for backend.
-RUN apt-get update \
+RUN apt-get update && apt-get install -y curl libtinfo-dev git \
     && cd app/backend \
-    && cabal update \
     # Install backend dependency.
-    && cabal install websockets \
-    && cd .. \
+    && cabal update && cabal install websockets \
     # Compile server.
-    && ghc -o server backend/server.hs -odir out/backend -hidir out/backend \
-    && cd frontend
-
-# Install elm.
-RUN apt-get install -y nodejs \
-    && apt-get install npm \
-    && npm install -g elm \
-    # Transpile elm to js output.
+    && ghc -o server server.hs -odir ../out/backend -hidir ../out/backend \
+    # Install Node.
+    && curl -sL https://deb.nodesource.com/setup_4.x | bash - \
+    && apt-get install -y nodejs \
+    # Install Elm.
+    && curl https://raw.githubusercontent.com/elm-lang/elm-platform/ba667c435f03c8f938b03cd8997b1801857d202b/installers/BuildFromSource.hs > BuildFromSource.hs \
+    && runhaskell BuildFromSource.hs 0.18 \
+    # Compile elm to js output.
+    && cd /app/frontend \
     && elm-make src/Main.elm --output ../out/frontend/main.js \
-    && cd .. \
     # Copy static assets.
-    && cp frontend/assets/* out/frontend
-
-# Install nginx.
-RUN apt-get install -y nginx \
+    && cp assets/* ../out/frontend \
+    # Install nginx.
+    && apt-get install -y nginx \
     && mv lambda-chat.conf /etc/nginx/sites-available \
     && ln -s /etc/nginx/sites-available/lambda-chat.conf /etc/nginx/sites-enabled/lambda-chat.conf \
-    && systemctl restart nginx
 
+EXPOSE 9160
 CMD ["app/out/backend/server", "&"]
