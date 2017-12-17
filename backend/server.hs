@@ -11,7 +11,6 @@ import Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Text.Regex.Posix
-
 import qualified Network.WebSockets as WS
 
 type Client = (Text, WS.Connection)
@@ -34,23 +33,28 @@ removeClient client = filter ((/= fst client) . fst)
 
 sendDirectMessage :: Text -> Text -> ServerState -> IO ()
 sendDirectMessage user msg clients = do
-  let recipient = (words (T.unpack msg))!!1
-  let client = find (\(name, _)->(T.unpack name)==recipient) clients
+  let recipient = words (T.unpack msg)!!1
+  let client = find (\(name, _)->T.unpack name==recipient) clients
 
   case client of
-    Nothing -> broadcast ("SYSTEM: " `mappend` user `mappend` " is extremely stupid. She or he wanna send message to nobody") clients
-    Just (_, conn) -> WS.sendTextData conn (user `mappend` " directly to you: " `mappend` T.pack(drop (9+ (length $ T.unpack user)) (T.unpack msg)))
+    Nothing -> broadcast
+      ("SYSTEM: " `mappend` user `mappend` " is extremely stupid. She or he wanna send message to user that does not exist😳") clients
+    Just (_, conn) ->
+      WS.sendTextData conn (user `mappend` " directly to you: " `mappend` T.pack(drop  (8 + length (T.unpack user)) (T.unpack msg)))
 
-
-
-
-
+session :: WS.Connection -> MVar ServerState -> Client -> IO()
 session conn state client = do
    modifyMVar_ state $ \s -> do
      let s' = addClient client s
      broadcast ("SYSTEM: " `mappend` fst client `mappend` " joined.") s'
      return s'
    talk conn state client
+
+
+sendMessageWithVulgarism :: MVar ServerState -> Text -> Text -> IO()
+sendMessageWithVulgarism state user msg =
+  readMVar state >>= broadcast
+    (user `mappend`": " `mappend` T.replace "fuck" "f*ck" msg)
 
 broadcast :: Text -> ServerState -> IO ()
 broadcast message clients = do
@@ -70,14 +74,14 @@ application state pending = do
   msg <- WS.receiveData conn
   clients <- readMVar state
   case msg of
-          _   | any ($ fst client)
-                [T.null, T.any isPunctuation, T.any isSpace] ->
-                    WS.sendTextData conn ("Name cannot " `mappend`
-                        "contain punctuation or whitespace, and " `mappend`
-                        "cannot be empty." :: Text)
-              | clientExists client clients ->
-                WS.sendTextData conn ("User already exists." :: Text)
-              | otherwise -> finally (session conn state client) disconnect
+    _   | any ($ fst client)
+          [T.null, T.any isPunctuation, T.any isSpace] ->
+          WS.sendTextData conn ("Name cannot " `mappend`
+          "contain punctuation or whitespace, and " `mappend`
+          "cannot be empty." :: Text)
+        | clientExists client clients ->
+          WS.sendTextData conn ("User already exists." :: Text)
+        | otherwise -> finally (session conn state client) disconnect
 
             where
               client     = (T.drop 5 msg, conn)
@@ -89,11 +93,11 @@ application state pending = do
 talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
 talk conn state (user, _) = forever $ do
   msg <- WS.receiveData conn
-  T.putStrLn(  msg )
   case msg of
-          _
-              | ("direct " `T.isPrefixOf` msg) && (length (words $ T.unpack msg) > 4) -> readMVar state >>= broadcast
-                ("SYSTEM: " `mappend` user `mappend` " is so stupid that she or he cannot send proper direct message!😄")
-              | ("direct " `T.isPrefixOf` msg) -> readMVar state >>= sendDirectMessage user msg
-              | otherwise -> readMVar state >>= broadcast
-                (user `mappend` ": " `mappend` msg)
+    _   | ("direct " `T.isPrefixOf` msg) && (length (words $ T.unpack msg) > 4) -> readMVar state >>= broadcast
+        ("SYSTEM: " `mappend` user `mappend` " is so stupid that she or he cannot send proper direct message!😄")
+        | "direct " `T.isPrefixOf` msg -> readMVar state >>= sendDirectMessage user msg
+        | T.toLower msg == T.pack "ping" -> WS.sendTextData conn (T.pack "👻: pong")
+        | T.unpack (T.toLower msg) =~ ("fuck" ::String) -> sendMessageWithVulgarism state user msg
+        | otherwise -> readMVar state >>= broadcast
+          (user `mappend` ": " `mappend` msg)
