@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Main where
+
+module Server ( server ) where
+
 import Data.Char (isPunctuation, isSpace)
 import Data.Monoid (mappend)
 import Data.Text (Text)
@@ -44,11 +46,11 @@ sendDirectMessage user msg clients = do
 
 session :: WS.Connection -> MVar ServerState -> Client -> IO()
 session conn state client = do
-   modifyMVar_ state $ \s -> do
-     let s' = addClient client s
-     broadcast ("SYSTEM: " `mappend` fst client `mappend` " joined.") s'
-     return s'
-   talk conn state client
+  modifyMVar_ state $ \s -> do
+    let s' = addClient client s
+    broadcast ("SYSTEM: " `mappend` fst client `mappend` " joined.") s'
+    return s'
+  talk conn state client
 
 
 sendMessageWithVulgarism :: MVar ServerState -> Text -> Text -> IO()
@@ -61,8 +63,8 @@ broadcast message clients = do
   T.putStrLn message
   forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
-main :: IO ()
-main = do
+server :: IO ()
+server = do
   state <- newMVar newServerState
   T.putStrLn "I'm server and I'm here to serve you."
   WS.runServer "127.0.0.1" 9160 $ application state
