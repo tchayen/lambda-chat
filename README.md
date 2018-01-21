@@ -10,9 +10,8 @@ elm-package install
 
 In `/backend`:
 ```bash
-cabal install websockets
-cd ../out/backend
-ghc -o server ../../backend/server.hs -odir . -hidir .
+stack install
+stack build
 ```
 
 ## Developing
@@ -26,26 +25,22 @@ Copy static files to the output directory:
 cp assets/* out/frontend
 ```
 
-Run elm-reactor to be able to use it as a server:
+Run elm-reactor in `out` to be able to use it as a server:
 ```bash
 elm-reactor
 ```
+And now you can visit `http://localhost:8000/frontend/main.html`
 
-Run backend (`127.0.0.1:9160`):
+Run backend:
 ```bash
-./server
+# assuming you have ~/.local/bin in your $PATH:
+lambda-chat-backend-exe
 ```
 
 ## Deployment
 Configure Nginx (or whatever) to serve frontend statically.
 
-Run `./server` in background process.
-
-## Running docker
-```bash
-docker build --rm -f Dockerfile -t lambda-chat:latest .
-docker run lambda-chat -p 80:80
-```
+Run server in background process.
 
 ## Explanation
 
