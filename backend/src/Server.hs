@@ -35,14 +35,14 @@ removeClient client = filter ((/= fst client) . fst)
 
 sendDirectMessage :: Text -> Text -> ServerState -> IO ()
 sendDirectMessage user msg clients = do
-  let recipient = words (T.unpack msg)!!1
-  let client = find (\(name, _)->T.unpack name==recipient) clients
+  let recipient = words (T.unpack msg) !! 1
+  let client = find (\(name, _) -> T.unpack name == recipient) clients
 
   case client of
     Nothing -> broadcast
-      ("SYSTEM: " `mappend` user `mappend` " is extremely stupid. She or he wanna send message to user that does not exist😳") clients
+      ("SYSTEM: " `mappend` user `mappend` " is extremely stupid. She or he wanna send message to user that does not exist 😳") clients
     Just (_, conn) ->
-      WS.sendTextData conn (user `mappend` " directly to you: " `mappend` T.pack(drop  (8 + length (T.unpack user)) (T.unpack msg)))
+      WS.sendTextData conn (user `mappend` " directly to you: " `mappend` T.pack (drop (8 + length (T.unpack user)) (T.unpack msg)))
 
 session :: WS.Connection -> MVar ServerState -> Client -> IO()
 session conn state client = do
@@ -84,7 +84,6 @@ application state pending = do
         | clientExists client clients ->
           WS.sendTextData conn ("User already exists." :: Text)
         | otherwise -> finally (session conn state client) disconnect
-
             where
               client     = (T.drop 5 msg, conn)
               disconnect = do
@@ -97,7 +96,7 @@ talk conn state (user, _) = forever $ do
   msg <- WS.receiveData conn
   case msg of
     _   | ("direct " `T.isPrefixOf` msg) && (length (words $ T.unpack msg) > 4) -> readMVar state >>= broadcast
-        ("SYSTEM: " `mappend` user `mappend` " is so stupid that she or he cannot send proper direct message!😄")
+        ("SYSTEM: " `mappend` user `mappend` " is so stupid that she or he cannot send proper direct message! 😄")
         | "direct " `T.isPrefixOf` msg -> readMVar state >>= sendDirectMessage user msg
         | T.toLower msg == T.pack "ping" -> WS.sendTextData conn (T.pack "👻: pong")
         | T.unpack (T.toLower msg) =~ ("fuck" ::String) -> sendMessageWithVulgarism state user msg
