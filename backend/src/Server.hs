@@ -2,6 +2,7 @@
 
 module Server ( server ) where
 
+import qualified VulgarismsHandler as VH
 import Data.Char (isPunctuation, isSpace)
 import Data.Monoid (mappend)
 import Data.Text (Text)
@@ -56,7 +57,7 @@ session conn state client = do
 sendMessageWithVulgarism :: MVar ServerState -> Text -> Text -> IO()
 sendMessageWithVulgarism state user msg =
   readMVar state >>= broadcast
-    (user `mappend`": " `mappend` T.replace "fuck" "f*ck" msg)
+    (user `mappend`": " `mappend` VH.removeUglyWords msg)
 
 broadcast :: Text -> ServerState -> IO ()
 broadcast message clients = do
@@ -99,6 +100,5 @@ talk conn state (user, _) = forever $ do
         ("SYSTEM: " `mappend` user `mappend` " is so stupid that she or he cannot send proper direct message! 😄")
         | "direct " `T.isPrefixOf` msg -> readMVar state >>= sendDirectMessage user msg
         | T.toLower msg == T.pack "ping" -> WS.sendTextData conn (T.pack "👻: pong")
-        | T.unpack (T.toLower msg) =~ ("fuck" ::String) -> sendMessageWithVulgarism state user msg
-        | otherwise -> readMVar state >>= broadcast
-          (user `mappend` ": " `mappend` msg)
+        | otherwise -> sendMessageWithVulgarism state user msg
+        

@@ -1,0 +1,10 @@
+module VulgarismsHandler ( removeUglyWords ) where
+  import qualified Data.Text as T
+  import Data.Text (Text)
+
+
+  removeUglyWords :: Text -> Text
+  removeUglyWords =
+    T.replace (T.pack "fuck") (T.pack  "fork")
+    .T.replace (T.pack "dick") (T.pack  "duck")
+    .T.replace (T.pack "bitch") (T.pack  "beach")
