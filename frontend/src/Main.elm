@@ -9,7 +9,7 @@ import Update exposing (update)
 import Subscriptions exposing (subscriptions)
 import Html exposing (..)
 
-{-| main function starting the app.
+{-| main function of the app.
 -}
 main : Program Never Model Msg
 main =

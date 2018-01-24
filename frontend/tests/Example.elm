@@ -3,6 +3,14 @@ module Example exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
+import Model exposing (Model, Msg, url)
+import WebSocket
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  WebSocket.listen url Model.Receive
+
 
 
 suite : Test
