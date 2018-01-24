@@ -7,17 +7,13 @@ Copyright   : (c) osdnk, 2018
 -}
 module MessageHandler ( sendDirectMessage, sendMessage, broadcast ) where
 
-import Data.Char (isPunctuation, isSpace)
 import Data.Monoid (mappend)
 import Data.Text (Text)
-import Data.String
 import Data.List
-import Control.Exception (finally)
-import Control.Monad (forM_, forever)
-import Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
+import Control.Monad (forM_)
+import Control.Concurrent (MVar, readMVar)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import Text.Regex.Posix
 import qualified Network.WebSockets as WS
 import qualified VulgarismsHandler as VH
 import Model (ServerState)

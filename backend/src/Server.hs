@@ -47,7 +47,7 @@ module Server ( server ) where
       broadcast ("SYSTEM: " `mappend` fst client `mappend` " joined.") s'
       return s'
     talk conn state client
-  
+
   -- | Starter function
   server :: IO ()
   server = do
