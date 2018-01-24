@@ -1,5 +1,9 @@
 module Update exposing (..)
 
+{-|
+@docs parseMessage, update
+-}
+
 import Regex exposing (contains, regex, find, HowMany)
 import Maybe exposing (Maybe)
 import List exposing (head)
@@ -7,6 +11,9 @@ import String exposing (isEmpty, split, concat, uncons)
 import Model exposing (Model, Msg, Message, url)
 import WebSocket
 
+
+{-| Helper function for parsing messages.
+-}
 parseMessage : String -> Maybe Message
 parseMessage input =
   let
@@ -18,6 +25,9 @@ parseMessage input =
       _ ->
         Nothing
 
+
+{-| update function.
+-}
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of

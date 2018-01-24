@@ -1,5 +1,8 @@
 module View exposing (..)
 
+{-|
+@docs renderMessage, view
+-}
 import List exposing (map)
 import Html exposing (Html, div, ul, li, text, em, input, button, h2)
 import Html.Attributes exposing (class, value, placeholder, classList)
@@ -8,6 +11,8 @@ import Html.Events.Extra exposing (onEnter)
 import Model exposing (Model, Msg, Message)
 
 
+{-| renderMessage helper.
+-}
 renderMessage : Message -> Html Msg
 renderMessage message =
   case message.author of
@@ -22,6 +27,8 @@ renderMessage message =
         ]
 
 
+{-| Generate view.
+-}
 view : Model -> Html Msg
 view model =
   case model.login of

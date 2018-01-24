@@ -1,3 +1,5 @@
 out/
 node_modules/
 elm-stuff/
+.doit.db
+docs/
