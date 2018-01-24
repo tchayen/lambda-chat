@@ -6,7 +6,6 @@ import Update exposing (update)
 import Subscriptions exposing (subscriptions)
 import Html exposing (..)
 
-
 main : Program Never Model Msg
 main =
   Html.program
