@@ -42,6 +42,26 @@ Configure Nginx (or whatever) to serve frontend statically.
 
 Run server in background process.
 
+## Generate Elm docs
+Download Elm docs
+```bash
+pip3 install --upgrade pip setuptools
+brew install libmagic
+pip3 install elm-doc
+```
+
+Generate Elm docs
+```bash
+elm-doc . --output docs
+```
+
+Use (for example spark as a server for static files)
+```bash
+go get github.com/rif/spark
+~/go/bin/spark
+```
+Now you can visit `0.0.0.0:8080` and see the docs.
+
 ## Explanation
 
 #### What is `elm-package.json` for?
