@@ -2,8 +2,8 @@
 {-|
 Module      : Model
 Description : Simple models for client and server
-Copyright   : (c) osdnk, 2018
-                  tcheyen, 2018
+Copyright   : (c) osdnk   2018
+                  tcheyen 2018
 -}
 module Model ( Client, ServerState ) where
   import qualified Network.WebSockets as WS

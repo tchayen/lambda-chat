@@ -2,8 +2,11 @@
 {-|
 Module      : Server
 Description : Module hadling main functionality for managing WebSockets
-Copyright   : (c) osdnk, 2018
-                  tcheyen, 2018
+Copyright   : (c) osdnk   2018
+                  tcheyen 2018
+
+  Based on (the only available) example usage of the library:
+  https://github.com/jaspervdj/websockets/blob/master/example/server.lhs
 -}
 module Server ( server ) where
 
@@ -22,7 +25,6 @@ module Server ( server ) where
   import qualified VulgarismsHandler as VH
   import MessageHandler (sendDirectMessage, sendMessage, broadcast)
   import Model (ServerState, Client)
-
 
   newServerState :: ServerState
   newServerState = []

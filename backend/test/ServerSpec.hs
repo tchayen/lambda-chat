@@ -1,19 +1,15 @@
-  {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
 module ServerSpec where
 
-
 import Test.Hspec
-import           Network.WebSockets
-import           Network.WebSockets.Connection
+import Network.WebSockets
+import Network.WebSockets.Connection
 import qualified Server as S
 import qualified Network.WebSockets as WS
 import Text.Regex.Posix
 import qualified VulgarismsHandler as VH
 
-
-
 main = hspec spec
-
 spec = do
   describe "even" $ do
     it "checks if number is even" $

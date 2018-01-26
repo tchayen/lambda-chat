@@ -2,8 +2,8 @@
 {-|
 Module      : Message Handler
 Description : Module hadling sending messages
-Copyright   : (c) osdnk, 2018
-                  tcheyen, 2018
+Copyright   : (c) osdnk   2018
+                  tcheyen 2018
 -}
 module MessageHandler ( sendDirectMessage, sendMessage, broadcast ) where
 
@@ -18,7 +18,6 @@ import qualified Network.WebSockets as WS
 import qualified VulgarismsHandler as VH
 import Model (ServerState)
 
-
 -- | Managing sending direct messages prefixed with `direct ` and receiver
 sendDirectMessage :: Text -> Text -> ServerState -> IO ()
 sendDirectMessage user msg clients = do
@@ -30,7 +29,6 @@ sendDirectMessage user msg clients = do
       ("SYSTEM: " `mappend` user `mappend` " is so stupid. She or he wanna send message to user that does not exist 😳") clients
     Just (_, conn) ->
       WS.sendTextData conn (user `mappend` " directly to you: " `mappend` T.pack (drop (8 + length (T.unpack user)) (T.unpack msg)))
-
 
 -- | sending messages handler
 sendMessage :: MVar ServerState -> Text -> Text -> IO()
