@@ -3,7 +3,7 @@
 Module      : Message Handler
 Description : Module hadling sending messages
 Copyright   : (c) osdnk   2018
-                  tcheyen 2018
+                  tchayen 2018
 -}
 module MessageHandler ( sendDirectMessage, sendMessage, broadcast ) where
 

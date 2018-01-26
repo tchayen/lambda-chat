@@ -2,7 +2,7 @@
 Module      : Vulgarisms Handler
 Description : Module hadling removing vulgsrisms from messages
 Copyright   : (c) osdnk   2018
-                  tcheyen 2018
+                  tchayen 2018
 -}
 module VulgarismsHandler ( removeUglyWords ) where
   import qualified Data.Text as T

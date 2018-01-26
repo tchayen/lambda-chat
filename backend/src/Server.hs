@@ -3,7 +3,7 @@
 Module      : Server
 Description : Module hadling main functionality for managing WebSockets
 Copyright   : (c) osdnk   2018
-                  tcheyen 2018
+                  tchayen 2018
 
   Based on (the only available) example usage of the library:
   https://github.com/jaspervdj/websockets/blob/master/example/server.lhs
