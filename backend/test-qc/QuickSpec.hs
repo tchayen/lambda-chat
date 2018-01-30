@@ -10,8 +10,14 @@ instance Arbitrary Text where
   arbitrary = pack <$> arbitrary
   shrink xs = pack <$> shrink (unpack xs)
 
-prop_vulgarismsHandler text =
+prop_fuckHandler text =
   not ((pack "fuck") `isInfixOf` (VH.removeUglyWords text))
+
+prop_bitchHandler text =
+  not ((pack "bitch") `isInfixOf` (VH.removeUglyWords text))
+
+prop_dickHandler text =
+  not ((pack "dick") `isInfixOf` (VH.removeUglyWords text))
 
 return []
 
