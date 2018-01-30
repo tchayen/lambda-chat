@@ -1,12 +1,19 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Main where
 
+import Test.QuickCheck.All
 import Test.QuickCheck
+import qualified VulgarismsHandler as VH
+import Data.Text (Text, pack, unpack, isInfixOf)
 
-main = quickCheck True
+instance Arbitrary Text where
+  arbitrary = pack <$> arbitrary
+  shrink xs = pack <$> shrink (unpack xs)
 
-reverse :: [a] -> [a]
-reverse []     = []
-reverse (x:xs) = Prelude.reverse xs ++ [x]
+prop_vulgarismsHandler text =
+  not ((pack "fuck") `isInfixOf` (VH.removeUglyWords text))
 
-prop_ReverseReverseId :: [Integer] -> Bool
-prop_ReverseReverseId xs = Prelude.reverse (Prelude.reverse xs) == xs
+return []
+
+main :: IO Bool
+main = $quickCheckAll

@@ -51,7 +51,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - lambda-chat-backend
-  lambda-chat-backend-quickheck-test:
+  lambda-chat-backend-quickcheck-test:
     main:                QuickSpec.hs
     source-dirs:         test-qc
     ghc-options:
